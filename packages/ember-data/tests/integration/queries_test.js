@@ -60,8 +60,7 @@ test("When a query is made, the adapter should receive a record array it can pop
   });
 });
 
-
-test("When a query is made, the record array promise can be resolved multiple times.", function() {
+test("model array promise can call then when promised has been fulfilled", function() {
   expect(1);
 
   adapter.findQuery = function(store, type, query, recordArray) {

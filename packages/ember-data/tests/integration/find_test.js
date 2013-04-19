@@ -80,3 +80,33 @@ test("When multiple records are requested, the store should not call findMany on
   store.load(Person, { id: 1 });
   store.findMany(Person, [ 1 ]);
 });
+
+test("model promise can call then when promised has been fulfilled", function() {
+  expect(2);
+
+  adapter.find = function(store, type, id) {
+    stop();
+
+    var self = this;
+
+    // Simulate latency to ensure correct behavior in asynchronous conditions.
+    // Once 100ms has passed, load the results of the query into the record array.
+    setTimeout(function() {
+      Ember.run(function() {
+        store.load(type, id, { id: 1, name: "Braaaahm Dale" });
+      });
+    }, 100);
+  };
+
+  var promise = store.find(Person, 1);
+  promise.then(function(value) {
+    ok(true, 'promise was returned');
+    promise.then(function(value) {
+      ok(true, 'promise was returned');
+      start();
+    });
+    
+  });
+
+
+});
